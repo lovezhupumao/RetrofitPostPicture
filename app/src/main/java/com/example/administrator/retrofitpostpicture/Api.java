@@ -13,6 +13,16 @@ import rx.Observable;
  * Created by Administrator on 2016/9/14.
  */
 public interface Api {
+    /**
+     *接口地址 http://apis.juhe.cn/mobile/get；
+     * 请求示例：http://apis.juhe.cn/mobile/get?phone=13429667914&key=您申请的KEY
+     * @param phone
+     * @param key
+     * @return
+     */
+    @Headers("Content-Type:application/json")
+    @GET("mobile/get")
+    Observable<PhoneNumInfo> getPhoneNumBerInfo(@Query("phone") String phone, @Query("key") String key);
 
     /**
      * http://image.ideayapai.com/upload?defectType=0&perunit=1
