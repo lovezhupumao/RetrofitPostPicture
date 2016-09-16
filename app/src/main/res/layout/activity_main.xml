@@ -13,6 +13,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btn"
+        android:text="号码归属地"
         android:id="@+id/btn_text"/>
-
+    <ImageView
+        android:id="@+id/src"
+        android:layout_below="@+id/btn_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+<ImageView
+    android:layout_below="@+id/src"
+    android:id="@+id/res"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
 </RelativeLayout>

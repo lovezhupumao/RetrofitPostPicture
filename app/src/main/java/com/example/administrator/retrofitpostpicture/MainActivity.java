@@ -8,6 +8,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
@@ -23,11 +27,16 @@ import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ImageView src;
+    private ImageView res;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button btntext=(Button)findViewById(R.id.btn_text);
+        src=(ImageView)findViewById(R.id.src);
+        res=(ImageView)findViewById(R.id.res);
+        Picasso.with(this).load(new File(Environment.getExternalStorageDirectory()+"/33.png")).into(src);
         btntext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -38,30 +47,24 @@ public class MainActivity extends AppCompatActivity {
                         .build();
                 final Api phone=retrofit.create(Api.class);
                 phone.getPhoneNumBerInfo("15123339336", "2f121eb8bf260e938df638ec3cc2e5d4")
-                .map(new Func1<PhoneNumInfo, String>() {
-                    @Override
-                    public String call(PhoneNumInfo phoneNumInfo) {
-                        return phoneNumInfo.getResult().getCity();
-                    }
-                })
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<String>() {
-                            @Override
-                            public void onCompleted() {
+                .subscribe(new Subscriber<PhoneNumInfo>() {
+                    @Override
+                    public void onCompleted() {
 
-                            }
+                    }
 
-                            @Override
-                            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i("++++++++",e.getMessage());
+                    }
 
-                            }
-
-                            @Override
-                            public void onNext(String s) {
-                               System.out.println(s);
-                            }
-                        });
+                    @Override
+                    public void onNext(PhoneNumInfo phoneNumInfo) {
+                           Log.i("++++++++",phoneNumInfo.getResult().getCity());
+                    }
+                });
             }
         });
         Button btn=(Button)findViewById(R.id.btn);
@@ -74,8 +77,9 @@ public class MainActivity extends AppCompatActivity {
                         .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                         .build();
                 Api phone=retrofit.create(Api.class);
+                File file=new File(Environment.getExternalStorageDirectory()+"/33.png");
                 final RequestBody requestFile =
-                        RequestBody.create(MediaType.parse("multipart/form-data"), new File(Environment.getExternalStorageDirectory()+"/33.png"));
+                        RequestBody.create(MediaType.parse("multipart/form-data"), file);
                 phone.getPictureCheck(0,1,requestFile)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -90,7 +94,10 @@ public class MainActivity extends AppCompatActivity {
 
                             @Override
                             public void onNext(PictureModel pictureModel) {
-                                Log.i("-----------",pictureModel.getImageGrayUrl());
+//                                    String path="http://www.ideayapai.com/Application/Home/View/default/Public/images/dd.jpg";
+//                                Picasso.with(MainActivity.this).load(path).into(res);
+                                Log.i("result",pictureModel.getImageGrayUrl());
+                                Glide.with(MainActivity.this).load(pictureModel.getImageGrayUrl()).into(res);
                             }
                         });
             }
